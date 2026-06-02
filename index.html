@@ -562,25 +562,28 @@ function getCtx(){
 function ding(){
   try{
     const c=getCtx(),t=c.currentTime;
-    // Boxing bell: 4 harmonics with long decay
-    [[880,.8,2.2],[1760,.4,1.4],[2640,.18,.8],[440,.55,2.8]].forEach(([f,v,d])=>{
+    // Echter Glockenton: Bell-Obertöne nach Chowning-Verhältnissen
+    const base=660;
+    [[1.0,.7,3.5],[2.756,.35,2.2],[5.404,.18,1.4],[8.693,.09,.9],[0.5,.25,2.8]].forEach(([r,v,d])=>{
       const o=c.createOscillator(),g=c.createGain();
       o.connect(g);g.connect(c.destination);
-      o.type='sine';o.frequency.value=f;
-      g.gain.setValueAtTime(v,t);
+      o.type='sine';o.frequency.value=base*r;
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(v,t+.006);
       g.gain.exponentialRampToValueAtTime(.001,t+d);
       o.start(t);o.stop(t+d+.05);
     });
   }catch(e){}
 }
-function speak(n){
+function tick(){
   try{
-    const s=window.speechSynthesis;
-    if(!s)return;
-    s.cancel();
-    const u=new SpeechSynthesisUtterance(String(n));
-    u.lang='de-DE';u.rate=1.3;u.volume=1;
-    s.speak(u);
+    const c=getCtx(),t=c.currentTime;
+    const o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type='sine';o.frequency.value=1100;
+    g.gain.setValueAtTime(.55,t);
+    g.gain.exponentialRampToValueAtTime(.001,t+.07);
+    o.start(t);o.stop(t+.08);
   }catch(e){}
 }
 
@@ -607,7 +610,7 @@ function showRest(){
   const el=document.getElementById('rest-secs');
   function upd(s){el.textContent=s}
   upd(rem);show('rest');
-  S.timer=setInterval(()=>{rem--;upd(rem);if(rem<=5&&rem>0)speak(rem);if(rem<=0){clearT();startEx();}},1000);
+  S.timer=setInterval(()=>{rem--;upd(rem);if(rem<=5&&rem>0)tick();if(rem<=0){clearT();ding();startEx();}},1000);
 }
 function skipRest(){clearT();startEx()}
 
@@ -642,7 +645,7 @@ function runTimer(total){
   const C=534,circ=document.getElementById('t-circ'),el=document.getElementById('t-secs');
   function upd(s){circ.style.strokeDashoffset=C*(1-s/total);el.textContent=s}
   upd(rem);
-  S.timer=setInterval(()=>{rem--;upd(rem);if(rem<=5&&rem>0)speak(rem);if(rem<=0){clearT();ding();advance();}},1000);
+  S.timer=setInterval(()=>{rem--;upd(rem);if(rem<=5&&rem>0)tick();if(rem<=0){clearT();ding();advance();}},1000);
 }
 function userDone(){clearT();ding();advance()}
 function advance(){S.idx++;S.idx>=S.exs.length?showFinish():showRest()}
