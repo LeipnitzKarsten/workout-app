@@ -157,39 +157,33 @@
 
     .rest-body{
       flex:1;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;gap:22px;padding:12px 20px 0;
+      align-items:center;padding:0 20px 0;gap:10px;overflow:hidden;
     }
-    .rest-lbl{
-      font-size:11px;font-weight:700;letter-spacing:2px;
-      text-transform:uppercase;color:var(--muted);
+    .rest-top{
+      padding-top:14px;display:flex;flex-direction:column;
+      align-items:center;flex-shrink:0;
     }
+    .rest-num{font-size:80px;font-weight:800;line-height:1;color:var(--orange)}
+    .rest-unit{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:1px;text-transform:uppercase}
 
-    .ring-wrap{position:relative;width:174px;height:174px;flex-shrink:0}
-    .ring-wrap svg{position:absolute;top:0;left:0;transform:rotate(-90deg)}
-    .ring-inner{
-      position:absolute;inset:0;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;
+    .next-lbl{
+      font-size:11px;font-weight:700;letter-spacing:1.5px;
+      text-transform:uppercase;color:var(--muted);flex-shrink:0;
     }
-    .ring-num{font-size:56px;font-weight:800;line-height:1}
-    .ring-unit{font-size:12px;color:var(--muted);margin-top:2px}
-
-    .next-card{
-      width:100%;background:var(--surface);border-radius:18px;
-      border:1px solid var(--border);overflow:hidden;
+    .next-name-big{
+      width:100%;font-size:40px;font-weight:800;
+      white-space:nowrap;overflow:hidden;text-align:center;
+      line-height:1.1;flex-shrink:0;
     }
-    .next-hd{
-      padding:9px 16px 8px;font-size:10px;font-weight:700;
-      letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
-      border-bottom:1px solid var(--border);
+    .next-img-big{
+      width:100%;flex:1;min-height:0;
+      border-radius:16px;overflow:hidden;background:var(--surface);
     }
-    .next-body{display:flex;align-items:center;gap:14px;padding:12px 16px}
-    .next-thumb{
-      width:68px;height:68px;border-radius:12px;
-      background:#e8e8e8;flex-shrink:0;overflow:hidden;
+    .next-img-big img{width:100%;height:100%;object-fit:contain;display:block}
+    .next-val-big{
+      font-size:30px;font-weight:700;
+      color:var(--orange);flex-shrink:0;padding-bottom:8px;
     }
-    .next-thumb img{width:100%;height:100%;object-fit:contain;display:block}
-    .next-name{font-size:17px;font-weight:700}
-    .next-val{font-size:13px;color:var(--muted);margin-top:3px}
 
     /* BIG skip button */
     .skip-btn{
@@ -360,38 +354,14 @@
     </div>
 
     <div class="rest-body">
-      <div class="rest-lbl">Pause</div>
-
-      <div class="ring-wrap">
-        <svg width="174" height="174">
-          <circle cx="87" cy="87" r="75" fill="none" stroke="#1a1a2e" stroke-width="8"/>
-          <circle id="rest-circ" cx="87" cy="87" r="75" fill="none"
-            stroke="url(#rg)" stroke-width="8" stroke-linecap="round"
-            stroke-dasharray="471" stroke-dashoffset="0"
-            style="transition:stroke-dashoffset 1s linear"/>
-          <defs>
-            <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#ff6b35"/>
-              <stop offset="100%" stop-color="#ffb347"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        <div class="ring-inner">
-          <div class="ring-num" id="rest-secs">30</div>
-          <div class="ring-unit">Sekunden</div>
-        </div>
+      <div class="rest-top">
+        <div class="rest-num" id="rest-secs">30</div>
+        <div class="rest-unit">Sekunden</div>
       </div>
-
-      <div class="next-card">
-        <div class="next-hd">Nächste Übung</div>
-        <div class="next-body">
-          <div class="next-thumb"><img id="next-img" src="" alt=""></div>
-          <div>
-            <div class="next-name" id="next-name"></div>
-            <div class="next-val" id="next-val"></div>
-          </div>
-        </div>
-      </div>
+      <div class="next-lbl">Nächste Übung</div>
+      <div class="next-name-big" id="next-name"></div>
+      <div class="next-img-big"><img id="next-img" src="" alt=""></div>
+      <div class="next-val-big" id="next-val"></div>
     </div>
 
     <button class="skip-btn" onclick="skipRest()">⏭ Pause überspringen</button>
@@ -534,6 +504,15 @@ const MSGS = [
 // ── State ────────────────────────────────────────────────────────────────
 let S={key:null,exs:[],idx:0,timer:null,startTime:null,ctx:null,onConfirm:null};
 
+function fitText(el,maxPx){
+  el.style.fontSize=maxPx+'px';
+  requestAnimationFrame(()=>{
+    let size=maxPx;
+    while(el.scrollWidth>el.offsetWidth&&size>14){
+      size--;el.style.fontSize=size+'px';
+    }
+  });
+}
 function fmt(ex){
   if(ex.t==='time'){
     const m=Math.floor(ex.v/60),s=ex.v%60;
@@ -631,13 +610,15 @@ function showRest(){
   const wname=W[S.key].name, ex=S.exs[S.idx], total=S.exs.length;
   document.getElementById('rest-wname').textContent=wname;
   document.getElementById('next-img').src=IMGS[ex.img];
-  document.getElementById('next-name').textContent=ex.n;
+  const nn=document.getElementById('next-name');
+  nn.textContent=ex.n;
+  fitText(nn,40);
   document.getElementById('next-val').textContent=fmt(ex);
   setProg('rest-pfill','rest-ptxt','rest-ppct',S.idx,total,wname);
 
   let rem=30;
-  const C=471,circ=document.getElementById('rest-circ'),el=document.getElementById('rest-secs');
-  function upd(s){circ.style.strokeDashoffset=C*(1-s/30);el.textContent=s}
+  const el=document.getElementById('rest-secs');
+  function upd(s){el.textContent=s}
   upd(rem);show('rest');
   S.timer=setInterval(()=>{rem--;upd(rem);if(rem<=5&&rem>0)speak(rem);if(rem<=0){clearT();startEx();}},1000);
 }
