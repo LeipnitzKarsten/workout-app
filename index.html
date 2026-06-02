@@ -179,7 +179,7 @@
       width:100%;flex:1;min-height:0;
       border-radius:16px;overflow:hidden;background:var(--surface);
     }
-    .next-img-big img{width:100%;height:100%;object-fit:contain;display:block}
+    .next-img-big img{width:100%;height:100%;object-fit:cover;display:block;border-radius:16px}
     .next-val-big{
       font-size:30px;font-weight:700;
       color:var(--orange);flex-shrink:0;padding-bottom:8px;
@@ -210,12 +210,12 @@
       overflow:hidden;padding:8px 20px 0;
     }
     .ex-img-big2 img{
-      width:100%;height:100%;object-fit:contain;display:block;
-      border-radius:16px;background:var(--surface);
+      width:100%;height:100%;object-fit:cover;display:block;
+      border-radius:16px;
     }
     .ex-val-big{
       font-size:32px;font-weight:700;color:var(--orange);
-      flex-shrink:0;padding:6px 0 0;
+      flex-shrink:0;padding:14px 0 10px;
     }
     /* Timer ring — bigger */
     .t-ring{position:relative;width:200px;height:200px;flex-shrink:0;margin-top:6px}
@@ -247,8 +247,8 @@
     }
     .skip-ex-btn:active{background:var(--surface)}
 
-    .ex-btns{padding:0 20px;flex-shrink:0;display:flex;flex-direction:column;gap:10px}
-    .ex-btns-time{padding:0 20px;flex-shrink:0;display:flex;flex-direction:column;gap:10px}
+    .ex-btns{padding:0 20px 16px;flex-shrink:0;display:flex;flex-direction:column;gap:10px}
+    .ex-btns-time{padding:0 20px 16px;flex-shrink:0;display:flex;flex-direction:column;gap:10px}
 
     /* ══ FINISH SCREEN ═══════════════════════════════════ */
     #screen-finish{
