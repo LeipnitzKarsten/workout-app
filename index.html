@@ -198,38 +198,34 @@
     .skip-btn:active{background:var(--surface2)}
 
     /* ══ EXERCISE SCREEN ═════════════════════════════════ */
-    #screen-exercise{gap:0}
+    #screen-exercise{gap:0;align-items:center}
 
-    .ex-img-wrap{
-      flex-shrink:0;width:100%;
-      height:clamp(200px,45vh,310px);
-      background:#e8e8e8;overflow:hidden;position:relative;
-      display:flex;align-items:center;justify-content:center;
+    .ex-name-big{
+      width:100%;font-size:40px;font-weight:800;
+      white-space:nowrap;overflow:hidden;text-align:center;
+      line-height:1.1;flex-shrink:0;padding:10px 20px 0;
     }
-    .ex-img-wrap img{
-      width:100%;height:100%;object-fit:contain;object-position:center center;
-      display:block;
+    .ex-img-big2{
+      width:100%;flex:1;min-height:0;
+      overflow:hidden;padding:8px 20px 0;
     }
-    .ex-img-fade{display:none}
-
-    .ex-info{padding:12px 20px 0;flex-shrink:0}
-    .ex-name{font-size:24px;font-weight:800;letter-spacing:-.4px;line-height:1.2}
-    .ex-val{font-size:15px;color:var(--muted);margin-top:4px}
-
-    .ex-center{
-      flex:1;display:flex;align-items:center;justify-content:center;
-      padding:8px 24px 0;
+    .ex-img-big2 img{
+      width:100%;height:100%;object-fit:contain;display:block;
+      border-radius:16px;background:var(--surface);
     }
-
-    /* Timer ring */
-    .t-ring{position:relative;width:148px;height:148px}
+    .ex-val-big{
+      font-size:32px;font-weight:700;color:var(--orange);
+      flex-shrink:0;padding:6px 0 0;
+    }
+    /* Timer ring — bigger */
+    .t-ring{position:relative;width:200px;height:200px;flex-shrink:0;margin-top:6px}
     .t-ring svg{position:absolute;top:0;left:0;transform:rotate(-90deg)}
     .t-inner{
       position:absolute;inset:0;display:flex;flex-direction:column;
       align-items:center;justify-content:center;
     }
-    .t-sec{font-size:48px;font-weight:800;line-height:1}
-    .t-lbl{font-size:12px;color:var(--muted)}
+    .t-sec{font-size:68px;font-weight:800;line-height:1;color:var(--orange)}
+    .t-lbl{font-size:13px;color:var(--muted);margin-top:3px}
 
     /* Done button */
     .done-btn{
@@ -381,36 +377,27 @@
       <div class="prog-track"><div class="prog-fill" id="ex-pfill"></div></div>
     </div>
 
-    <div class="ex-img-wrap">
-      <img id="ex-img" src="" alt="">
-      <div class="ex-img-fade"></div>
-    </div>
-
-    <div class="ex-info">
-      <div class="ex-name" id="ex-name"></div>
-      <div class="ex-val" id="ex-val"></div>
-    </div>
-
-    <div class="ex-center">
-      <!-- Time-based: ring timer -->
-      <div class="t-ring" id="t-ring" style="display:none">
-        <svg width="148" height="148">
-          <circle cx="74" cy="74" r="62" fill="none" stroke="#1a1a2e" stroke-width="7"/>
-          <circle id="t-circ" cx="74" cy="74" r="62" fill="none"
-            stroke="url(#tg)" stroke-width="7" stroke-linecap="round"
-            stroke-dasharray="390" stroke-dashoffset="0"
-            style="transition:stroke-dashoffset 1s linear"/>
-          <defs>
-            <linearGradient id="tg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#8b5cf6"/>
-              <stop offset="100%" stop-color="#4ecdc4"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        <div class="t-inner">
-          <div class="t-sec" id="t-secs">30</div>
-          <div class="t-lbl">Sek.</div>
-        </div>
+    <div class="ex-name-big" id="ex-name"></div>
+    <div class="ex-img-big2"><img id="ex-img" src="" alt=""></div>
+    <div class="ex-val-big" id="ex-val"></div>
+    <!-- Time-based: ring timer -->
+    <div class="t-ring" id="t-ring" style="display:none">
+      <svg width="200" height="200">
+        <circle cx="100" cy="100" r="85" fill="none" stroke="#1a1a2e" stroke-width="9"/>
+        <circle id="t-circ" cx="100" cy="100" r="85" fill="none"
+          stroke="url(#tg)" stroke-width="9" stroke-linecap="round"
+          stroke-dasharray="534" stroke-dashoffset="0"
+          style="transition:stroke-dashoffset 1s linear"/>
+        <defs>
+          <linearGradient id="tg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#8b5cf6"/>
+            <stop offset="100%" stop-color="#4ecdc4"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="t-inner">
+        <div class="t-sec" id="t-secs">30</div>
+        <div class="t-lbl">Sek.</div>
       </div>
     </div>
 
@@ -630,8 +617,10 @@ function startEx(){
   const wname=W[S.key].name, ex=S.exs[S.idx], total=S.exs.length;
   document.getElementById('ex-wname').textContent=wname;
   document.getElementById('ex-img').src=IMGS[ex.img];
-  document.getElementById('ex-name').textContent=ex.n;
-  document.getElementById('ex-val').textContent=fmt(ex);
+  const en=document.getElementById('ex-name');
+  en.textContent=ex.n; fitText(en,40);
+  const exval=document.getElementById('ex-val');
+  exval.textContent=fmt(ex);
   setProg('ex-pfill','ex-ptxt','ex-ppct',S.idx,total,wname);
 
   const tring=document.getElementById('t-ring');
@@ -640,15 +629,17 @@ function startEx(){
 
   if(ex.t==='time'){
     tring.style.display='flex'; breps.style.display='none'; btime.style.display='flex';
+    exval.style.display='none';
     runTimer(ex.v);
   } else {
     tring.style.display='none'; breps.style.display='flex'; btime.style.display='none';
+    exval.style.display='block';
   }
   show('exercise');
 }
 function runTimer(total){
   let rem=total;
-  const C=390,circ=document.getElementById('t-circ'),el=document.getElementById('t-secs');
+  const C=534,circ=document.getElementById('t-circ'),el=document.getElementById('t-secs');
   function upd(s){circ.style.strokeDashoffset=C*(1-s/total);el.textContent=s}
   upd(rem);
   S.timer=setInterval(()=>{rem--;upd(rem);if(rem<=5&&rem>0)speak(rem);if(rem<=0){clearT();ding();advance();}},1000);
