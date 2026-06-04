@@ -179,7 +179,7 @@
       width:100%;flex:1;min-height:0;
       overflow:hidden;
     }
-    .next-img-big img{width:100%;height:100%;object-fit:cover;display:block;}
+    .next-img-big img{width:100%;height:100%;object-fit:contain;display:block;}
     .next-val-big{
       font-size:30px;font-weight:700;
       color:var(--orange);flex-shrink:0;padding-bottom:8px;
@@ -210,7 +210,7 @@
       overflow:hidden;
     }
     .ex-img-big2 img{
-      width:100%;height:100%;object-fit:cover;display:block;
+      width:100%;height:100%;object-fit:contain;display:block;
     }
     .ex-val-big{
       font-size:88px;font-weight:900;color:var(--orange);
@@ -602,7 +602,7 @@ function showRest(){
   const nn=document.getElementById('next-name');
   nn.textContent=ex.n;
   fitText(nn,40);
-  document.getElementById('next-val').textContent=fmt(ex);
+  document.getElementById('next-val').textContent=ex.t==='reps'?ex.v+' ×':fmt(ex);
   setProg('rest-pfill','rest-ptxt','rest-ppct',S.idx,total,wname);
 
   let rem=30;
